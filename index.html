@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Megan Edelstein &amp; Miles Russo | October 30, 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cedar: #2F3B2E;
+    --cedar-dark: #1E2620;
+    --rust: #B5652D;
+    --stone: #EAE7DD;
+    --stone-warm: #E3DFD2;
+    --ink: #23241F;
+    --gold: #C9A24B;
+    --mist: #7C8A85;
+    --white: #FBFAF6;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Inter', sans-serif;
+    background:var(--stone);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    letter-spacing:-0.01em;
+  }
+
+  a{color:inherit;text-decoration:none;}
+
+  /* ---------- PASSWORD GATE ---------- */
+  #gate{
+    position:fixed;
+    inset:0;
+    background:var(--cedar-dark);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+    padding:24px;
+  }
+  #gate .contour{
+    position:absolute;
+    inset:0;
+    opacity:0.15;
+    pointer-events:none;
+  }
+  .gate-card{
+    position:relative;
+    background:var(--white);
+    border-radius:2px;
+    padding:56px 44px;
+    max-width:400px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 30px 80px rgba(0,0,0,0.35);
+  }
+  .gate-card .eyebrow{
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--mist);
+    margin-bottom:18px;
+    display:block;
+  }
+  .gate-card h1{
+    font-size:clamp(28px,5vw,36px);
+    color:var(--cedar-dark);
+    margin-bottom:8px;
+  }
+  .gate-card p{
+    color:var(--mist);
+    font-size:14px;
+    margin-bottom:28px;
+  }
+  #gate-form{display:flex;flex-direction:column;gap:12px;}
+  #gate-password{
+    padding:14px 16px;
+    border:1px solid #D8D4C6;
+    border-radius:2px;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    background:var(--white);
+  }
+  #gate-password:focus{outline:2px solid var(--cedar);outline-offset:2px;}
+  #gate-submit{
+    padding:14px 16px;
+    background:var(--cedar);
+    color:var(--white);
+    border:none;
+    border-radius:2px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:background 0.2s ease;
+  }
+  #gate-submit:hover{background:var(--cedar-dark);}
+  #gate-error{
+    color:var(--rust);
+    font-size:13px;
+    min-height:18px;
+    margin-top:4px;
+  }
+  body.locked #site{display:none;}
+  body:not(.locked) #gate{display:none;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky;
+    top:0;
+    background:rgba(234,231,221,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid rgba(35,36,31,0.08);
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 32px;
+  }
+  nav .brand{
+    font-family:'Fraunces',serif;
+    font-size:18px;
+    letter-spacing:0.02em;
+  }
+  nav ul{
+    display:flex;
+    gap:28px;
+    list-style:none;
+  }
+  nav ul li a{
+    font-size:13px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink);
+    padding-bottom:2px;
+    border-bottom:1px solid transparent;
+    transition:border-color 0.2s ease, color 0.2s ease;
+  }
+  nav ul li a:hover, nav ul li a:focus{
+    border-color:var(--rust);
+    color:var(--rust);
+  }
+  #nav-toggle{display:none;}
+  .nav-toggle-btn{display:none;background:none;border:none;font-size:22px;cursor:pointer;}
+
+  @media (max-width:760px){
+    nav ul{
+      position:absolute;
+      top:100%;left:0;right:0;
+      background:var(--stone);
+      flex-direction:column;
+      gap:0;
+      display:none;
+      border-bottom:1px solid rgba(35,36,31,0.08);
+    }
+    nav ul.open{display:flex;}
+    nav ul li{width:100%;}
+    nav ul li a{display:block;padding:16px 32px;border-bottom:1px solid rgba(35,36,31,0.06);}
+    .nav-toggle-btn{display:block;}
+  }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    position:relative;
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    background:var(--cedar-dark);
+    color:var(--white);
+    overflow:hidden;
+    padding:32px;
+  }
+  header.hero .contour-bg{
+    position:absolute;
+    inset:0;
+    opacity:0.35;
+  }
+  header.hero .hero-inner{position:relative;z-index:2;}
+  header.hero .eyebrow{
+    font-size:12px;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:block;
+    margin-bottom:22px;
+  }
+  header.hero h1{
+    font-size:clamp(48px,10vw,104px);
+    line-height:1.02;
+    font-weight:400;
+  }
+  header.hero h1 .amp{
+    color:var(--rust);
+    font-style:italic;
+    font-weight:300;
+    padding:0 0.15em;
+  }
+  header.hero .date-line{
+    margin-top:28px;
+    font-size:clamp(15px,2vw,18px);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--stone-warm);
+  }
+  header.hero .venue-line{
+    margin-top:10px;
+    font-size:15px;
+    color:var(--mist);
+  }
+  header.hero .venue-line a{border-bottom:1px solid var(--rust);}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{
+    padding:96px 32px;
+    max-width:1080px;
+    margin:0 auto;
+  }
+  section .section-head{
+    text-align:center;
+    margin-bottom:56px;
+  }
+  section .section-head .eyebrow{
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--rust);
+    display:block;
+    margin-bottom:14px;
+  }
+  section .section-head h2{
+    font-size:clamp(30px,5vw,44px);
+    color:var(--cedar-dark);
+  }
+  section .section-head p.lede{
+    max-width:520px;
+    margin:16px auto 0;
+    color:var(--mist);
+    font-size:15px;
+  }
+  .divider{
+    height:1px;
+    background:linear-gradient(to right, transparent, rgba(35,36,31,0.15), transparent);
+  }
+
+  /* ---------- SCHEDULE ---------- */
+  .day-block{margin-bottom:48px;}
+  .day-block:last-child{margin-bottom:0;}
+  .day-block .day-label{
+    font-size:13px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--cedar);
+    border-bottom:1px solid rgba(47,59,46,0.25);
+    padding-bottom:12px;
+    margin-bottom:24px;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .day-label .day-date{color:var(--mist);font-weight:400;letter-spacing:0.04em;}
+  .event-row{
+    display:grid;
+    grid-template-columns:120px 1fr;
+    gap:24px;
+    padding:18px 0;
+    border-bottom:1px solid rgba(35,36,31,0.06);
+  }
+  .event-row:last-child{border-bottom:none;}
+  .event-row .time{
+    font-family:'Fraunces',serif;
+    font-size:17px;
+    color:var(--rust);
+  }
+  .event-row .event-name{
+    font-size:16px;
+    font-weight:600;
+    margin-bottom:4px;
+  }
+  .event-row .event-loc{
+    font-size:14px;
+    color:var(--mist);
+  }
+
+  /* ---------- TRAVEL ---------- */
+  .travel-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+  }
+  @media (max-width:700px){.travel-grid{grid-template-columns:1fr;}}
+  .travel-card{
+    background:var(--white);
+    padding:32px;
+    border-radius:2px;
+    border:1px solid rgba(35,36,31,0.08);
+  }
+  .travel-card h3{font-size:19px;margin-bottom:12px;color:var(--cedar-dark);}
+  .travel-card p{font-size:14.5px;color:#4B4C45;margin-bottom:10px;}
+  .travel-card a.link-cta{
+    display:inline-block;
+    margin-top:8px;
+    font-size:13px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--rust);
+    border-bottom:1px solid var(--rust);
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq-item{
+    border-bottom:1px solid rgba(35,36,31,0.1);
+  }
+  .faq-item summary{
+    padding:20px 4px;
+    cursor:pointer;
+    font-weight:600;
+    font-size:15.5px;
+    list-style:none;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary::after{
+    content:"+";
+    font-family:'Fraunces',serif;
+    font-size:22px;
+    color:var(--rust);
+    transition:transform 0.2s ease;
+  }
+  .faq-item[open] summary::after{transform:rotate(45deg);}
+  .faq-item .faq-answer{
+    padding:0 4px 22px;
+    font-size:14.5px;
+    color:#4B4C45;
+    max-width:640px;
+  }
+  .faq-answer .placeholder-tag{
+    display:inline-block;
+    margin-top:8px;
+    font-size:11px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--mist);
+    background:var(--stone-warm);
+    padding:3px 8px;
+    border-radius:2px;
+  }
+
+  /* ---------- GALLERY ---------- */
+  .gallery-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+  }
+  @media (max-width:700px){.gallery-grid{grid-template-columns:repeat(2,1fr);}}
+  .gallery-item{
+    aspect-ratio:1;
+    background:linear-gradient(135deg,var(--stone-warm),#D9D4C4);
+    border-radius:2px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--mist);
+    font-size:12px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    text-align:center;
+    padding:12px;
+    position:relative;
+    overflow:hidden;
+  }
+  .gallery-item svg{width:28px;height:28px;margin-bottom:8px;opacity:0.5;}
+  .gallery-item .gi-inner{display:flex;flex-direction:column;align-items:center;}
+
+  /* ---------- REGISTRY ---------- */
+  .registry-box{
+    text-align:center;
+    background:var(--cedar-dark);
+    color:var(--white);
+    padding:64px 32px;
+    border-radius:2px;
+  }
+  .registry-box h2{color:var(--white);font-size:clamp(26px,4vw,36px);margin-bottom:14px;}
+  .registry-box p{color:var(--stone-warm);max-width:480px;margin:0 auto 28px;font-size:14.5px;}
+  .btn{
+    display:inline-block;
+    padding:15px 32px;
+    background:var(--rust);
+    color:var(--white);
+    border-radius:2px;
+    font-size:13px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    transition:background 0.2s ease;
+  }
+  .btn:hover{background:#9A5424;}
+  .btn.secondary{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.35);
+  }
+  .btn.secondary:hover{background:rgba(255,255,255,0.08);}
+
+  /* ---------- RSVP ---------- */
+  .rsvp-box{
+    text-align:center;
+    padding:64px 32px;
+    border:1px solid rgba(35,36,31,0.12);
+    border-radius:2px;
+  }
+  .rsvp-box p.deadline{
+    margin-top:18px;
+    font-size:13px;
+    color:var(--mist);
+    letter-spacing:0.03em;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    text-align:center;
+    padding:48px 32px;
+    color:var(--mist);
+    font-size:13px;
+  }
+  footer .heart{color:var(--rust);}
+
+  .note-edit{
+    font-size:11px;
+    color:var(--mist);
+    text-align:center;
+    margin-top:6px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body class="locked">
+
+<!-- ============ PASSWORD GATE ============ -->
+<div id="gate">
+  <svg class="contour" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <g fill="none" stroke="#C9A24B" stroke-width="1">
+      <ellipse cx="400" cy="300" rx="120" ry="80"/>
+      <ellipse cx="400" cy="300" rx="180" ry="130"/>
+      <ellipse cx="400" cy="300" rx="250" ry="190"/>
+      <ellipse cx="400" cy="300" rx="330" ry="250"/>
+    </g>
+  </svg>
+  <div class="gate-card">
+    <span class="eyebrow">Private Event</span>
+    <h1>Megan &amp; Miles</h1>
+    <p style="font-size:12px;color:var(--mist);margin-top:-16px;margin-bottom:20px;">Edelstein &amp; Russo</p>
+    <p>Please enter the password from your invitation to view wedding details.</p>
+    <form id="gate-form">
+      <input type="password" id="gate-password" placeholder="Password" autocomplete="off" required />
+      <button type="submit" id="gate-submit">Enter Site</button>
+      <div id="gate-error"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ SITE ============ -->
+<div id="site">
+
+<nav>
+  <div class="brand">M&nbsp;&amp;&nbsp;M</div>
+  <button class="nav-toggle-btn" id="navToggleBtn" aria-label="Toggle navigation">☰</button>
+  <ul id="navList">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#schedule">Schedule</a></li>
+    <li><a href="#travel">Travel &amp; Stay</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#registry">Registry</a></li>
+    <li><a href="#rsvp">RSVP</a></li>
+  </ul>
+</nav>
+
+<header class="hero" id="home">
+  <svg class="contour-bg" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <g fill="none" stroke="#C9A24B" stroke-width="0.75">
+      <ellipse cx="500" cy="400" rx="150" ry="95"/>
+      <ellipse cx="500" cy="400" rx="230" ry="150"/>
+      <ellipse cx="500" cy="400" rx="320" ry="215"/>
+      <ellipse cx="500" cy="400" rx="420" ry="290"/>
+      <ellipse cx="500" cy="400" rx="530" ry="370"/>
+    </g>
+  </svg>
+  <div class="hero-inner">
+    <span class="eyebrow">We're Getting Married</span>
+    <h1>Megan<span class="amp">&amp;</span>Miles</h1>
+    <div style="font-size:14px;letter-spacing:0.08em;color:var(--stone-warm);margin-top:6px;">Edelstein &amp; Russo</div>
+    <div class="date-line">Saturday, October 30, 2027</div>
+    <div class="venue-line">at <a href="https://www.cedarlakesestate.com/" target="_blank" rel="noopener">Cedar Lakes Estate</a>, Port Jervis, New York</div>
+  </div>
+</header>
+
+<!-- ============ SCHEDULE ============ -->
+<section id="schedule">
+  <div class="section-head">
+    <span class="eyebrow">The Weekend</span>
+    <h2>Schedule of Events</h2>
+    <p class="lede">All events take place on the grounds of Cedar Lakes Estate. Exact timing may shift slightly &mdash; check back for updates.</p>
+  </div>
+
+  <div class="day-block">
+    <div class="day-label">
+      <span>Friday</span>
+      <span class="day-date">October 29, 2027</span>
+    </div>
+    <div class="event-row">
+      <div class="time">Morning</div>
+      <div>
+        <div class="event-name">Arrival &amp; Check-In</div>
+        <div class="event-loc">Cedar Lakes Estate &mdash; <em>shuttle details coming soon</em></div>
+      </div>
+    </div>
+    <div class="event-row">
+      <div class="time">6:00 PM</div>
+      <div>
+        <div class="event-name">Cocktail Hour</div>
+        <div class="event-loc">The Dining Room &mdash; <em>time placeholder</em></div>
+      </div>
+    </div>
+    <div class="event-row">
+      <div class="time">7:00 PM</div>
+      <div>
+        <div class="event-name">Rehearsal Dinner</div>
+        <div class="event-loc">The Dining Room &mdash; <em>time placeholder</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block">
+    <div class="day-label">
+      <span>Saturday</span>
+      <span class="day-date">October 30, 2027</span>
+    </div>
+    <div class="event-row">
+      <div class="time">2:00 PM</div>
+      <div>
+        <div class="event-name">Ceremony</div>
+        <div class="event-loc">Cedar Lakes Estate</div>
+      </div>
+    </div>
+    <div class="event-row">
+      <div class="time">2:30 PM</div>
+      <div>
+        <div class="event-name">Cocktail Hour</div>
+        <div class="event-loc">Cedar Lakes Estate</div>
+      </div>
+    </div>
+    <div class="event-row">
+      <div class="time">6:00 PM</div>
+      <div>
+        <div class="event-name">Seated Dinner</div>
+        <div class="event-loc">The Banquet Hall</div>
+      </div>
+    </div>
+    <div class="event-row">
+      <div class="time">10:00 PM</div>
+      <div>
+        <div class="event-name">After-Party</div>
+        <div class="event-loc">The Banquet Hall &mdash; until late</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block">
+    <div class="day-label">
+      <span>Sunday</span>
+      <span class="day-date">October 31, 2027</span>
+    </div>
+    <div class="event-row">
+      <div class="time">Midday</div>
+      <div>
+        <div class="event-name">Departure</div>
+        <div class="event-loc">Cedar Lakes Estate &mdash; <em>shuttle details coming soon</em></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ TRAVEL & STAY ============ -->
+<section id="travel">
+  <div class="section-head">
+    <span class="eyebrow">Getting There</span>
+    <h2>Travel &amp; Accommodations</h2>
+    <p class="lede">All guests will be staying on-site at Cedar Lakes Estate for the weekend.</p>
+  </div>
+  <div class="travel-grid">
+    <div class="travel-card">
+      <h3>Venue &amp; Address</h3>
+      <p>Cedar Lakes Estate<br>1 Team USA Way<br>Port Jervis, NY 12771</p>
+      <p>About 90 minutes from New York City by car.</p>
+      <a class="link-cta" href="https://maps.app.goo.gl/RdstCqY1NmT1grXL9" target="_blank" rel="noopener">Open in Google Maps</a>
+    </div>
+    <div class="travel-card">
+      <h3>Where You'll Stay</h3>
+      <p>On-site accommodations at Cedar Lakes Estate are included for the wedding weekend. Room assignments and check-in details will be shared closer to the date.</p>
+      <p><em>Placeholder &mdash; add check-in/check-out times and any booking instructions here.</em></p>
+    </div>
+    <div class="travel-card">
+      <h3>Getting to the Estate</h3>
+      <p>Placeholder &mdash; add driving directions, closest airport, and whether a shuttle from the nearest airport/train station will be provided.</p>
+    </div>
+    <div class="travel-card">
+      <h3>What to Pack</h3>
+      <p>Late October in the Hudson Valley tends to be cool and crisp. Placeholder &mdash; add specific footwear/weather notes once finalized.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ FAQ ============ -->
+<section id="faq">
+  <div class="section-head">
+    <span class="eyebrow">Good to Know</span>
+    <h2>Frequently Asked Questions</h2>
+  </div>
+
+  <details class="faq-item">
+    <summary>Is there a dress code?</summary>
+    <div class="faq-answer">Formal attire. We recommend a layer or wrap for the outdoor ceremony, as late-October evenings in the Hudson Valley get cool.</div>
+  </details>
+
+  <details class="faq-item">
+    <summary>Are kids welcome?</summary>
+    <div class="faq-answer">Yes! Kids are welcome at every part of the weekend, from the rehearsal dinner through the after-party.</div>
+  </details>
+
+  <details class="faq-item">
+    <summary>Is parking available on-site, or is there a shuttle?</summary>
+    <div class="faq-answer">Parking is available on-site at Cedar Lakes Estate. We'll also be running a shuttle from Newark Airport to the hotel.<span class="placeholder-tag">Shuttle schedule TBD &mdash; add times once confirmed</span></div>
+  </details>
+
+  <details class="faq-item">
+    <summary>Is the ceremony indoors or outdoors, and what's the rain plan?</summary>
+    <div class="faq-answer">The ceremony will be outdoors on the estate grounds. If weather doesn't cooperate, we'll move indoors &mdash; either way, the celebration goes on.</div>
+  </details>
+
+  <details class="faq-item">
+    <summary>Can I bring a plus-one who wasn't on my invitation?</summary>
+    <div class="faq-answer">We're only able to accommodate the guests named on your invitation. Thank you for understanding!</div>
+  </details>
+
+  <details class="faq-item">
+    <summary>Will dietary restrictions and allergies be accommodated?</summary>
+    <div class="faq-answer">Yes &mdash; just let us know any dietary restrictions or allergies ahead of time (on your RSVP) and we'll make sure you're taken care of.</div>
+  </details>
+
+  <details class="faq-item">
+    <summary>What time should I arrive, and how do I get back at the end of the night?</summary>
+    <div class="faq-answer">Plan to arrive Friday morning and depart Sunday midday. More detail on shuttle/transportation timing to come.<span class="placeholder-tag">Add shuttle/checkout logistics once confirmed</span></div>
+  </details>
+
+  <details class="faq-item">
+    <summary>Is the after-party open to everyone, including kids?</summary>
+    <div class="faq-answer">Yes &mdash; every part of the wedding weekend, including the after-party, is open to guests of all ages.</div>
+  </details>
+
+  <details class="faq-item">
+    <summary>What's the best way to celebrate with a gift?</summary>
+    <div class="faq-answer">We ask that gifts come through our registry only &mdash; please, no gifts in person. You'll find the registry link below.</div>
+  </details>
+
+  <details class="faq-item">
+    <summary>Anything special we should pack?</summary>
+    <div class="faq-answer">If you'd like to use the estate's amenities, pack workout and swim gear &mdash; Cedar Lakes has a gym, pool, and lake access on the grounds.</div>
+  </details>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ GALLERY ============ -->
+<section id="gallery">
+  <div class="section-head">
+    <span class="eyebrow">A Few Favorites</span>
+    <h2>Photo Gallery</h2>
+    <p class="lede">Placeholder tiles &mdash; swap these for your own photos whenever you're ready.</p>
+  </div>
+  <div class="gallery-grid" id="galleryGrid"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ REGISTRY ============ -->
+<section id="registry">
+  <div class="registry-box">
+    <h2>Registry</h2>
+    <p>Your presence at our wedding is the greatest gift of all. For those who wish, we've set up a registry below.</p>
+    <a class="btn" href="https://www.zola.com/registry/placeholder" target="_blank" rel="noopener">View Our Registry</a>
+  </div>
+  <p class="note-edit">Placeholder link &mdash; replace with your real registry URL.</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ RSVP ============ -->
+<section id="rsvp">
+  <div class="rsvp-box">
+    <span class="eyebrow" style="color:var(--rust);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;display:block;margin-bottom:14px;">Let Us Know</span>
+    <h2>RSVP</h2>
+    <p class="lede" style="margin:16px auto 0;">Please respond by <strong>[RSVP deadline placeholder]</strong>. We can't wait to celebrate with you.</p>
+    <div style="margin-top:28px;">
+      <a class="btn" href="#" id="rsvpLink">RSVP Here</a>
+    </div>
+    <p class="deadline">RSVP form link not yet created &mdash; swap the href above once your Google Form is ready.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Can't wait to celebrate with you <span class="heart">&hearts;</span></p>
+  <p>Megan Edelstein &amp; Miles Russo &mdash; October 30, 2027 &mdash; Cedar Lakes Estate</p>
+</footer>
+
+</div><!-- /#site -->
+
+<script>
+  // ---- Password gate ----
+  // NOTE: This is a client-side deterrent only, not real security.
+  // Anyone viewing page source can find the password. Good enough to keep
+  // casual visitors/search engines out, not for protecting sensitive info.
+  const SITE_PASSWORD = "Megstein"; // <-- CHANGE THIS before sharing the link
+
+  const gateForm = document.getElementById('gate-form');
+  const gateError = document.getElementById('gate-error');
+  gateForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    const entered = document.getElementById('gate-password').value.trim();
+    if (entered.toLowerCase() === SITE_PASSWORD.toLowerCase()) {
+      document.body.classList.remove('locked');
+    } else {
+      gateError.textContent = "That password doesn't match. Please check your invitation and try again.";
+    }
+  });
+
+  // ---- Mobile nav toggle ----
+  const navToggleBtn = document.getElementById('navToggleBtn');
+  const navList = document.getElementById('navList');
+  navToggleBtn.addEventListener('click', function(){
+    navList.classList.toggle('open');
+  });
+  navList.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', function(){ navList.classList.remove('open'); });
+  });
+
+  // ---- Gallery placeholders ----
+  const galleryGrid = document.getElementById('galleryGrid');
+  const cameraIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7l1.4-2.4A2 2 0 0111.1 3.6h1.8a2 2 0 011.7 1L16 7"/><circle cx="12" cy="13.5" r="3.5"/></svg>';
+  for (let i = 1; i <= 9; i++){
+    const div = document.createElement('div');
+    div.className = 'gallery-item';
+    div.innerHTML = '<div class="gi-inner">' + cameraIcon + '<span>Photo ' + i + '</span></div>';
+    galleryGrid.appendChild(div);
+  }
+</script>
+
+</body>
+</html>
